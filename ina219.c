@@ -408,7 +408,13 @@ int ina219_powersave(ina219 *dev, bool on)
 
 void ina219_destroy(ina219 *dev)
 {
-    i2cbus_close(dev->bus);
+    if (dev == NULL)
+        return;
+    if (dev->bus == NULL)
+        return;
+    uint8_t buf[3] = {INA219_REG_CONFIG, 0x80, 0x00};
+    i2cbus_write(dev->bus, buf, 3); // generate reset
+    i2cbus_close(dev->bus); // close I2C bus
 }
 
 #ifdef UNIT_TEST_INA219

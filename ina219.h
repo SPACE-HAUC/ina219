@@ -1,24 +1,15 @@
-/*!
- * @file Adafruit_INA219.h
- *
- * This is a library for the Adafruit INA219 breakout board
- * ----> https://www.adafruit.com/product/904
- *
- * Adafruit invests time and resources providing this open source code,
- * please support Adafruit and open-source hardware by purchasing
- * products from Adafruit!
- *
- * Written by Bryan Siepert and Kevin "KTOWN" Townsend for Adafruit Industries.
- *
- * BSD license, all text here must be included in any redistribution.
- *
+/**
+ * @file ina219.h
+ * @author Sunip K. Mukherjee (sunipkmukherjee@gmail.com)
+ * @brief INA218 Userspace Driver for Linux
+ * @version 0.1
+ * @date 2021-04-20
+ * 
+ * @copyright Copyright (c) 2021
+ * 
  */
-
-#ifndef _LIB_ADAFRUIT_INA219_
-#define _LIB_ADAFRUIT_INA219_
-#ifdef __cplusplus
-extern "C" {
-#endif
+#ifndef INA_219_LIB
+#define INA_219_LIB
 
 /** default I2C address **/
 #define INA219_ADDRESS (0x40) // 1000000 (A0+A1=GND)
@@ -167,31 +158,76 @@ enum
 
 typedef struct
 {
-    i2cbus bus[1];
-    uint32_t calValue;
+    i2cbus bus[1];     /// I2C Bus device
+    uint32_t calValue; /// Calibration value
     // The following multipliers are used to convert raw current and power
     // values to mA and mW, taking into account the current config settings
-    uint32_t currentDivider_mA;
-    float powerMultiplier_mW;
+    uint32_t currentDivider_mA; /// Current divider
+    float powerMultiplier_mW;   /// Power multiplier
 } ina219;
-
+/**
+ * @brief Initialize an INA219 sensor with given address on bus
+ * 
+ * @param dev Pointer to INA219 struct
+ * @param bus I2C bus number (X in /dev/i2cX)
+ * @param addr I2C Address
+ * @param ctx Device context
+ * @return int Positive on success, negative on failure
+ */
 int ina219_init(ina219 *dev, int bus, int addr, int ctx);
-
+/**
+ * @brief Set the calibration mode (hence operating range) of the INA219 sensor
+ * 
+ * @param dev Pointer to INA219 struct
+ * @param calib_mode Calibration mode, value of INA219_CALIB_*
+ * @return int Positive on success, negative on failure
+ */
 int ina219_set_calib(ina219 *dev, int calib_mode);
-
+/**
+ * @brief Get bus voltage from INA219
+ * 
+ * @param dev Pointer to INA219 struct
+ * @param val Pointer to measurement (V)
+ * @return int Positive on success, negative on failure
+ */
 int ina219_get_bus_voltage(ina219 *dev, float *val);
-
+/**
+ * @brief Get shunt voltage form INA219
+ * 
+ * @param dev Pointer to INA219 struct
+ * @param val Pointer to measurement (V)
+ * @return int Positive on success, negative on failure
+ */
 int ina219_get_shunt_voltage(ina219 *dev, float *val);
-
+/**
+ * @brief Get current from INA219
+ * 
+ * @param dev Pointer to INA219 struct
+ * @param val Pointer to measurement (A)
+ * @return int Positive on success, negative on failure
+ */
 int ina219_get_current(ina219 *dev, float *val);
-
+/**
+ * @brief Get power from INA219
+ * 
+ * @param dev Pointer to INA219 struct
+ * @param val Pointer to measurement (W)
+ * @return int Positive on success, negative on failure
+ */
 int ina219_get_power(ina219 *dev, float *val);
-
+/**
+ * @brief Set/unset power saving mode
+ * 
+ * @param dev Pointer to INA219 struct
+ * @param on Boolean
+ * @return int Positive on success, negative on failure
+ */
 int ina219_powersave(ina219 *dev, bool on);
-
+/**
+ * @brief Close connection to INA219 device
+ * 
+ * @param dev Pointer to INA219 struct
+ */
 void ina219_destroy(ina219 *dev);
 
-#ifdef __cplusplus
-}
-#endif
-#endif
+#endif // INA_219_LIB
