@@ -433,11 +433,11 @@ int main(int argc, char *argv[])
 {
     if (argc != 3)
     {
-        printf("Usage: %s <I2C Bus ID> <I2C Bus Address>\n\n", argv[0]);
+        printf("Usage: %s <I2C Bus ID> <I2C Bus Address (hex)>\n\n", argv[0]);
         return 0;
     }
     int bus = atoi(argv[1]);
-    int addr = atoi(argv[2]);
+    int addr = strtol(argv[2], NULL, 16);
     ina219 dev[1];
     if (ina219_init(dev, bus, addr, -1) < 0)
     {
